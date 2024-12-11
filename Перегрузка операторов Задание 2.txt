@@ -1,0 +1,246 @@
+#include <iostream>
+#include <windows.h>
+
+class Fraction
+{
+private:
+	int numerator_;
+	int denominator_;
+
+public:
+	Fraction(int numerator, int denominator)
+	{
+		numerator_ = numerator;
+		denominator_ = denominator;
+	}
+
+	//вывод объекта в строку:
+	void toString() {
+
+			std::cout << numerator_ << "/" << denominator_;
+
+	}
+	
+	//подсчет результата деления:
+	float result() {
+		return static_cast<float>(numerator_) / static_cast<float> (denominator_);
+	};
+
+	
+	bool operator==(Fraction& f) {
+		if (this->result() == f.result()) {
+			return 1;
+		}
+		else return 0;
+	}
+
+	bool operator!=(Fraction& f) {
+		if (!(*this == f)) {
+			return 1;
+		}
+		else return 0;
+	}
+
+	bool operator< (Fraction & f) {
+		if (this->result() < f.result()) {
+			return 1;
+		}
+		else return 0;
+	}
+
+	bool operator> (Fraction& f) {
+		if (!(*this < f) && !(*this == f)) {
+			return 1;
+		}
+		else return 0;
+	}
+
+	bool operator>= (Fraction& f) {
+		if (!(*this < f)) {
+			return 1;
+		}
+		else return 0;
+	}
+
+	bool operator<= (Fraction& f) {
+		if (!(*this > f)) {
+			return 1;
+		}
+		else return 0;
+	}
+
+	//функция расчета наибольшего общего делителя:
+	int NSD(int a, int b)
+	{
+		while (a != b)
+			if (a > b) a -= b;
+			else b -= a;
+		return a;
+	}
+
+	Fraction operator+ (Fraction& f) {
+		Fraction a (1, 1);
+		a.numerator_ = this->numerator_ * f.denominator_ + this->denominator_ * f.numerator_;
+		a.denominator_ = std::abs(this->denominator_ * f.denominator_);
+		int b = NSD(std::abs(a.numerator_), std::abs(a.denominator_));
+		a.numerator_ /= b; a.denominator_ /= b;
+		return a;
+}
+
+	Fraction operator- (Fraction& f) {
+		Fraction a(1, 1);
+		a.numerator_ = this->numerator_ * f.denominator_ - this->denominator_ * f.numerator_;
+		a.denominator_ = std::abs(this->denominator_ * f.denominator_);
+		int b = NSD(std::abs(a.numerator_), std::abs(a.denominator_));
+		a.numerator_ /= b; a.denominator_ /= b;
+		return a;
+	}
+
+	Fraction operator* (Fraction& f) {
+		Fraction a(1, 1);
+		a.numerator_ = this->numerator_ * f.numerator_;
+		a.denominator_ = std::abs(this->denominator_ * f.denominator_);
+		int b = NSD(std::abs(a.numerator_), std::abs(a.denominator_));
+		a.numerator_ /= b; a.denominator_ /= b;
+		return a;
+	}
+
+	Fraction operator/ (Fraction& f) {
+		Fraction a(1, 1);
+		Fraction temp(1, 1);
+		if (f.numerator_ >= 0) {
+			temp.numerator_ = f.denominator_;
+		}
+		else {
+			temp.numerator_ = -f.denominator_;
+		}
+		temp.denominator_ = std::abs(f.numerator_);
+		a = *this * temp;
+		int b = NSD(std::abs(a.numerator_), std::abs(a.denominator_));
+		a.numerator_ /= b; a.denominator_ /= b;
+		return a;
+	}
+
+	Fraction operator-() {
+			this->numerator_ *= -1;
+
+		return *this;
+	}
+
+	Fraction operator++() {
+		
+this->numerator_ += this->denominator_;
+
+		return *this;
+	}
+
+	Fraction operator++(int) {
+		Fraction temp{ *this };
+		++(*this);
+		return temp;
+	}
+
+	Fraction operator--() {
+		this->numerator_ -= this->denominator_;
+
+		return *this;
+	}
+
+	Fraction operator--(int) {
+		Fraction temp{ *this };
+		--(*this);
+		return temp;
+	}
+};
+
+int main()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	std::setlocale(LC_ALL, "rus");
+
+	int a{ 0 }, b{ 0 };
+
+	std::cout << "Введите числитель дроби 1: ";
+	std::cin >> a;
+
+	do {
+		std::cout << "Введите знаменатель дроби 1: ";
+		std::cin >> b;
+		if (b < 0) {
+			std::cout << "Знаменатель не может быть отрицательным!" << std::endl;
+		}
+	} while (b < 0);
+
+	Fraction f1(a, b);
+
+
+	std::cout << "Введите числитель дроби 2: ";
+	std::cin >> a;
+
+	do {
+		std::cout << "Введите знаменатель дроби 2: ";
+		std::cin >> b;
+		if (b < 0) {
+			std::cout << "Знаменатель не может быть отрицательным!" << std::endl;
+		}
+	} while (b < 0);
+
+	Fraction f2(a, b);
+
+	f1.toString();
+	std::cout << " + ";
+	f2.toString();
+	std::cout << " = ";
+	Fraction f3 = f1 + f2;
+	f3.toString();
+	std::cout << std::endl << std::endl;
+
+	f1.toString();
+	std::cout << " - ";
+	f2.toString();
+	std::cout << " = ";
+	f3 = f1 - f2;
+	f3.toString();
+	std::cout << std::endl << std::endl;
+
+	f1.toString();
+	std::cout << " * ";
+	f2.toString();
+	std::cout << " = ";
+	f3 = f1 * f2;
+	f3.toString();
+	std::cout << std::endl << std::endl;
+	
+	f1.toString();
+	std::cout << " / ";
+	f2.toString();
+	std::cout << " = ";
+	f3 = f1 / f2;
+	f3.toString();
+	std::cout << std::endl << std::endl;
+
+	std::cout << "++";
+	f1.toString();
+	std::cout << " * ";
+	f2.toString();
+	std::cout << " = ";
+	f3 = ++f1 * f2;
+	f3.toString();
+	std::cout <<std::endl << "Значение дроби 1 = ";
+	f1.toString();
+	std::cout << std::endl << std::endl;
+
+	f1.toString();
+	std::cout << "--";
+	std::cout << " * ";
+	f2.toString();
+	std::cout << " = ";
+	f3 = f1-- * f2;
+	f3.toString();
+	std::cout << std::endl << "Значение дроби 1 = ";
+	f1.toString();
+	std::cout << std::endl << std::endl;
+
+	return 0;
+}
