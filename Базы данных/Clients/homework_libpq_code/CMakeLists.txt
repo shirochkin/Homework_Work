@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+project(Clients)
+add_executable(creation main.cpp)
+add_subdirectory(libpq++\\libpqxx-master)
+target_compile_features(creation PRIVATE cxx_std_17)
+target_link_libraries(creation pqxx)
